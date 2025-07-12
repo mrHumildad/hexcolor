@@ -1,62 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Hexagon, TiledHexagons } from 'tiled-hexagons';
-const K = 4;
+/* const K = 4;
+ */
 
-const getNieghbors = (i, k) => {
-  let totalTiles = k * k - (k / 2);
-  let row = 0;
-  let index = 0;
-  let firstCol = i === 0 ? true : false;
-  let lastCol = false;
-  while (row < k-1) {
-    index = row % 2 === 0 ? index + k : index + k - 1;
-    if (i === index) {
-      firstCol = true;
-    }
-    if (i === index-1) {
-      lastCol = true;
-    }
-    if (i < index) {
-      break;
-    }
-    row++;
-  }
-  if (row === 0 && i >= index) {
-    row = k - 1; // Last row
-    if (i === totalTiles - 1) {
-      lastCol = true; // Last tile in the last row
-    }
-  }
-  const pairCol = row % 2 === 0;
-  
-  let neighbors = [];
-  //check NO
-  if (row > 0 && !(firstCol && pairCol)) {
-    neighbors.push(i - k);
-  }
-  //check NE
-  if (row > 0 && !(lastCol  && pairCol)) {
-    neighbors.push(i - k + 1);
-  }
-  //check E
-  if (!lastCol) {
-    neighbors.push(i + 1);
-  }
-  //check SE
-  if (!(row === k - 1) && !(lastCol && pairCol)) {
-    neighbors.push(i + k);
-  }
-  //check SO
-  if (!(row === k - 1) && !(firstCol && pairCol)) {
-    neighbors.push(i + k - 1);
-  }
-  //check O
-  if (!firstCol) {
-    neighbors.push(i - 1);
-  }
-  return neighbors;
-}
-const generateMap = (k) => {
+/* const generateMap = (k) => {
   const hexagons = [];
   for (let x = 0; x < k*k-(k/2); x++) {
     hexagons.push({
@@ -68,8 +15,8 @@ const generateMap = (k) => {
     });
   }
   return hexagons;
-}
-const HexMap = () => {
+} */
+const HexMap = ({tiles, k}) => {
   // Responsive tilePx: 1/4 of min(screen width, screen height)
   const [tilePx, setTilePx] = useState(50);
 
@@ -92,7 +39,7 @@ const HexMap = () => {
         tileSideLengths={tilePx}
         tileGap={2}
         tileBorderRadii={5}
-        maxHorizontal={K}
+        maxHorizontal={k}
         elevation={0}
         styles={{
           normal: {elevation: 0 },
@@ -104,7 +51,7 @@ const HexMap = () => {
           fontSize: fontSize,
           fill: '#7cebff'
         }}
-        tiles={generateMap(K)}
+        tiles={tiles}
       />
     </div>
   );

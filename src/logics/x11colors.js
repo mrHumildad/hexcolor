@@ -242,7 +242,7 @@ export const x11colors = [
     {
         "name": "DarkOliveGreen",
         "hex": "#556b2f",
-        "rgb": ",85,107,47"
+        "rgb": "85,107,47"
     },
     {
         "name": "Olive",

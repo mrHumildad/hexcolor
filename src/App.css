@@ -2,6 +2,21 @@
   margin: 0 auto;
   text-align: center;
 }
-.App {
-  width: 100vw;
+#Footer, #Header {
+  position: fixed;
+  display: flex;
+  justify-content: space-around;
+  font-size: 4vh;
+  align-items: center;
+  width: 100%;
+  background-color: #f1f1f1;
+  padding: 10px;
+  text-align: center;
+  height: 7vh;
+}
+#Header {
+  top: 0;
+}
+#Footer {
+  bottom: 0;
 }
