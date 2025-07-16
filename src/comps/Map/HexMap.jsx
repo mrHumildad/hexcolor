@@ -32,9 +32,9 @@ const HexMap = ({tiles, k}) => {
     return () => window.removeEventListener('resize', updateTilePx);
   }, []);
 
-  const fontSize = tilePx * 0.6;
+  const fontSize = tilePx * 0.3;
   return (
-    <div>
+    
       <TiledHexagons
         tileSideLengths={tilePx}
         tileGap={2}
@@ -53,7 +53,6 @@ const HexMap = ({tiles, k}) => {
         }}
         tiles={tiles}
       />
-    </div>
   );
 }
 

@@ -13,23 +13,23 @@ console.log(chroma.blend('red', 'blue', 'overlay').hex());
 console.log(chroma.blend('red', 'blue', 'burn').hex());
 console.log(chroma.blend('red', 'blue', 'dodge').hex()); */
 
-const x = chroma.distance('fff', 'ff0')
-console.log('distance', x);
+const x = chroma.mix('fff', 'ff0')
+console.log('mix', x);
 
-console.log(chroma.distance('#5c00d2', '#ffffff', 'rgb'));
-console.log(chroma.distance('#0000e4', '#ffffff', 'rgb'));
-console.log(chroma.distance('#008b00', '#ffffff', 'rgb'));
-console.log(chroma.distance('#0000d6', '#ffffff', 'rgb'));
-console.log(chroma.distance('#e54304', '#ffffff', 'rgb'));
+console.log(chroma.mix('#000000', '#ffffff' ,0.5, 'rgb'));
+console.log(chroma.mix('#0000ff', '#ffffff' ,0.5, 'rgb'));
+console.log(chroma.mix('#008888', '#ffffff' ,0.5, 'rgb'));
+console.log(chroma.mix('#0000d6', '#ffffff' ,0.5, 'rgb'));
+console.log(chroma.mix('#e54304', '#ffffff' ,0.5, 'rgb'));
 
-console.log(chroma.distance('#efe5fd', '#ffffff', 'rgb'));
-console.log(chroma.distance('#d4bff9', '#ffffff', 'rgb'));
-console.log(chroma.distance('#f2fde4', '#ffffff', 'rgb'));
-console.log(chroma.distance('#eee6ff', '#ffffff', 'rgb'));
-console.log(chroma.distance('#fae4fc', '#ffffff', 'rgb'));
-console.log(chroma.distance('#fbe2f0', '#ffffff', 'rgb'));
+console.log(chroma.mix('#efe5fd', '#ffffff' ,0.5, 'rgb'));
+console.log(chroma.mix('#d4bff9', '#ffffff' ,0.5, 'rgb'));
+console.log(chroma.mix('#f2fde4', '#ffffff' ,0.5, 'rgb'));
+console.log(chroma.mix('#eee6ff', '#ffffff' ,0.5, 'rgb'));
+console.log(chroma.mix('#fae4fc', '#ffffff' ,0.5, 'rgb'));
+console.log(chroma.mix('#fbe2f0', '#ffffff' ,0.5, 'rgb'));
 
-export const startColor = (goal, moves, value) => {
+/* export const startColor = (goal, moves, value) => {
   // Randomly distribute 'moves' steps among R, G, B
   let steps = [0, 0, 0];
   let remaining = moves;
@@ -80,3 +80,4 @@ const test9 = startColor([128, 128, 128], 4, 20);
 console.log('[128, 128, 128], 4, 20', test9);
 const test10 = startColor([255, 128, 64], 3, 15);
 console.log('[255, 128, 64], 3, 15', test10);
+ */

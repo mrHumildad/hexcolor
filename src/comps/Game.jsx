@@ -3,70 +3,80 @@ import { useNavigate } from 'react-router-dom'
 import Header from './Header.jsx'
 import Footer from './Footer.jsx'
 import HexMap from './Map/HexMap.jsx'
-import { x11colors } from '../logics/x11colors.js'
-import { getRNDarr } from '../logics/utils.js'
-import { getNeighbors, startColor } from '../logics/utils.js'
+import { playColorTone } from '../logics/funHex.js'
+import { getNeighbors, getNeigColor, invertColor } from '../logics/utils.js'
 import chroma from 'chroma-js'
-const unusedCol ='#EEEEE'
-const K = 6
-const steps = 30;
-const value = 10;
-const colorNeighbor = steps / 6;
 
-const Game = () => {
+const Game = ({level, goal, k=4, tollerance}) => {
   const navigate = useNavigate();
   const [isOver, setIsOver] = useState(false);
-  const [colors, setColors] = useState(x11colors);
-  const [completed, setCompleted] = useState([]);
-  const [goal, setGoal] = useState(getRNDarr(x11colors).hex);
-  /* const [myColor, setMyColor] = useState(chroma.random().hex()); */
-  const [myColor, setMyColor] = useState(chroma(startColor(goal, steps, value)).hex());
+  console.log(k, 'k in Game.jsx');
+  const [myColor, setMyColor] = useState(chroma.random().hex());
   const [usedTiles, setUsedTiles] = useState([0]);
-  const [clickable, setClicable] = useState([]);
   const [lastClick, setLastClick] = useState(0);
-  const moves = usedTiles.length - 1;
-  console.log('goal', goal);
+  //const moves =  usedTiles.length - 1;
+  const locked = {
+    R: chroma(myColor).rgb()[0] === chroma(goal.hex).rgb()[0],
+    G: chroma(myColor).rgb()[1] === chroma(goal.hex).rgb()[1],
+    B: chroma(myColor).rgb()[2] === chroma(goal.hex).rgb()[2]
+  }
+  console.log('goal', goal.hex, k) ;
   console.log('myColor', myColor);
-  //console.log(startColor([100, 100, 100], 6, 10))
-  const distance = chroma.distance(myColor, goal);
-  const midColor = chroma.mix(myColor, goal).hex();
-  console.log('distance: ', chroma.distance(myColor, goal))
   useEffect(() => {
     if (isOver) {
       navigate('/gameover');
     }
   }, [isOver, navigate]);
-  const neighs = getNeighbors(lastClick, K)
+  const neighs =[...new Set(getNeighbors(lastClick, k))].filter(n=> !usedTiles.includes(n));
+  if (neighs.length === 0) {
+    console.log('no neighbors found');
+    navigate('/gameover');
+    return null;
+  }
+  if (locked.R && locked.G && locked.B) {
+    console.log('locked', locked);
+    navigate('/nextlevel');
+    return null;
+  }
   console.log(neighs)
   const generateTiles = () => {
     const tiles = [];
-    for (let x = 0; x < K*K-(K/2); x++) {
-      let bgColor = unusedCol;
+    for (let x = 0; x < k*k-(k/2); x++) {
+      let bgColor = invertColor(goal.hex);
+      let shadow = invertColor(myColor);
       let click = () => {
           console.log(bgColor);
         }
       let text = '';
       if (usedTiles.includes(x)) {
-        text = Math.floor(distance)
+        /* text = chroma(myColor).rgb().join(', '); */
         bgColor = myColor
+        shadow = myColor;
       } else if (neighs.includes(x)) {
-        //console.log(x, ' is neigh of ', lastClick)
-        const neighColor = getRNDarr(x11colors, [goal]).hex
+        const neighColor = getNeigColor(myColor, goal.hex, locked)
+        console.log('neighColor', neighColor)
         click = () => {
-          console.log(' my new color:', chroma.mix(myColor,neighColor).hex())
-          console.log('neighColor', neighColor)
-          console.log('myColor', myColor)
-          console.log(chroma.mix(myColor,neighColor, 0.5, 'rgb').hex())
-          setMyColor(chroma.mix(myColor,neighColor, 0.5, 'rgb').hex())
+          playColorTone(neighColor);
+          let mix = chroma.mix(myColor,neighColor, 0.5, 'rgb');
+          console.log(mix, 'mix')
+          mix = mix._rgb.map((c, i) => {
+          if (Math.abs(c - chroma(goal.hex).rgb()[i]) < tollerance) {
+            console.log('close to goal', c, chroma(goal.hex).rgb()[i], i)
+            return chroma(goal.hex).rgb()[i];
+          }
+          return c;
+          })
+          setMyColor(chroma(mix).hex())
           setUsedTiles([...usedTiles, x])
           setLastClick(x)
         }
         bgColor = neighColor;
-        text = Math.floor(chroma.distance(myColor, neighColor))
+        text = chroma(bgColor).rgb().join(', ');
       }
       tiles.push({
         text: text,
         fill: bgColor,
+        shadow: shadow,
         onClick: click
       });
     }
@@ -74,13 +84,16 @@ const Game = () => {
   }
   const tiles = generateTiles()
   return (
-    <div style={{ backgroundColor: goal}}>
-      <Header goal={goal} distance={distance} moves={moves} />
-      <HexMap 
-        tiles={tiles}
-        k={K}
-      />
-      <Footer myColor={myColor} />
+    <div className='Game' style={{ backgroundColor: myColor }}>
+      <Header goal={goal} level={level} />
+      <div className='separator' />
+      <div id='hexContainer'>
+        <HexMap 
+          tiles={tiles}
+          k={k}
+        />
+      </div>
+      <Footer myColor={myColor} goal={goal} />
     </div>
   )
 }
