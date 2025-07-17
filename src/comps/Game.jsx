@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useHistory } from 'react-router-dom';
 import Header from './Header.jsx'
 import Footer from './Footer.jsx'
 import HexMap from './Map/HexMap.jsx'
@@ -8,7 +8,8 @@ import { getNeighbors, getNeigColor, invertColor } from '../logics/utils.js'
 import chroma from 'chroma-js'
 
 const Game = ({level, goal, k=4, tollerance}) => {
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
+  const history = useHistory(); 
   const [isOver, setIsOver] = useState(false);
   console.log(k, 'k in Game.jsx');
   const [myColor, setMyColor] = useState(chroma.random().hex());
@@ -24,18 +25,18 @@ const Game = ({level, goal, k=4, tollerance}) => {
   console.log('myColor', myColor);
   useEffect(() => {
     if (isOver) {
-      navigate('/gameover');
+      history.push('/gameover');
     }
-  }, [isOver, navigate]);
+  }, [history, isOver]);
   const neighs =[...new Set(getNeighbors(lastClick, k))].filter(n=> !usedTiles.includes(n));
   if (neighs.length === 0) {
     console.log('no neighbors found');
-    navigate('/gameover');
+    history.push('/gameover');
     return null;
   }
   if (locked.R && locked.G && locked.B) {
     console.log('locked', locked);
-    navigate('/nextlevel');
+    history.push('/nextlevel');
     return null;
   }
   console.log(neighs)
